@@ -18,6 +18,9 @@ The main differences from the original library are:
 #### [npm](http://npmjs.com)
 
 #### [Bower](https://bower.io/)
+```bash
+bower install syncLogger
+```
 
 #### Manually
 

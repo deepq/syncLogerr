@@ -14,13 +14,14 @@ var Logerr = function () {
 
     var setConfig;
     var failedErrors = [];
+    var browser = detect();
 
     function init(userConfig) {
         if (!userConfig) userConfig = {};
 
         // Default configuration
         var config = {
-            detailedErrors: false,
+            detailedErrors: true,
             remoteLogging: false,
             syncInterval: 2000,
             remoteSettings: {
@@ -35,27 +36,27 @@ var Logerr = function () {
         setConfig = Object.assign(config, userConfig);
 
         //Remove current listener
-        window.removeEventListener('error', _listener);
+        window.removeEventListener('error', listener);
 
         // Listen to errors
-        window.addEventListener('error', _listener);
+        window.addEventListener('error', listener);
 
         syncFailedErrors(setConfig);
     }
 
     // NOTE: Private
-    function _listener(e) {
+    function listener(e) {
         if (setConfig.detailedErrors) {
-            _detailedErrors(e);
+            detailedErrors(e);
         }
 
         if (setConfig.remoteLogging) {
-            _remoteLogging(e, setConfig.remoteSettings);
+            remoteLogging(e, setConfig.remoteSettings);
         }
     }
 
-    function _detailedErrors(e) {
-        var i = _errorData(e);
+    function detailedErrors(e) {
+        var i = errorData(e);
         var str = [
             "%cType: %c" + i.type,
             "%cError: %c" + i.error,
@@ -82,7 +83,7 @@ var Logerr = function () {
         http.setRequestHeader("Content-type", "application/json");
         http.send(JSON.stringify(data));
         http.onreadystatechange = function () {
-            if (http.readyState == 4 && http.status == 200) {
+            if (http.readyState === 4 && http.status === 200) {
                 successCb && successCb();
                 return;
             }
@@ -91,14 +92,14 @@ var Logerr = function () {
         };
     }
 
-    function _remoteLogging(e, remoteSettings) {
+    function remoteLogging(e, remoteSettings) {
         if (!remoteSettings.url) {
             throw new Error('Provide remote URL to log errors remotely');
         } else if (remoteSettings.additionalParams && typeof remoteSettings.additionalParams !== 'object') {
             throw new Error('Invalid data type, additionalParams should be a valid object');
         }
 
-        var data = _errorData(e);
+        var data = errorData(e);
         var setData = Object.assign(data, remoteSettings.additionalParams);
 
         function handleSuccess() {
@@ -125,7 +126,7 @@ var Logerr = function () {
         }
 
         var data = batch.map(function (e) {
-            return Object.assign(_errorData(e), remoteSettings.additionalParams);
+            return Object.assign(errorData(e), remoteSettings.additionalParams);
         });
 
         function handleSuccess() {
@@ -151,10 +152,9 @@ var Logerr = function () {
         }, config.syncInterval);
     }
 
-    function _errorData(e) {
+    function errorData(e) {
         var filename = e.filename.lastIndexOf('/');
         var datetime = new Date().toString();
-        var browser = detect();
 
         /**
          * userAgent only for POST request purposes, not required in pretty print
