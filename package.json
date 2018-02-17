@@ -1,0 +1,22 @@
+{
+  "name": "syncLogerr",
+  "version": "0.1.0",
+  "repository": "https://github.com/deepq/syncLogerr.git",
+  "main": "syncLogerr.js",
+  "homepage": "https://github.com/deepq/syncLogerr",
+  "authors": [
+    "Yuri Rynkov <yuri@rynkov.eu>"
+  ],
+  "description": "Lightweight remote logging library for javascript browser errors",
+  "keywords": [
+    "javascript",
+    "debug",
+    "errorhandling",
+    "log",
+    "errorlogging",
+    "remotelogging",
+    "exceptionhandling",
+    "exceptions"
+  ],
+  "license": "MIT"
+}
