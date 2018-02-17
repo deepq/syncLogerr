@@ -1,4 +1,6 @@
----
+## SyncLogerr
+
+
 
 #### What does it do?
 Main purpose of this library is to log remotely browser javascript errors.
@@ -16,10 +18,12 @@ The main differences from the original library are:
 
 
 #### [npm](http://npmjs.com)
-
+```bash
+npm install synclogerr
+```
 #### [Bower](https://bower.io/)
 ```bash
-bower install syncLogger
+bower install syncLogerr
 ```
 
 #### Manually
