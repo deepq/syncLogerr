@@ -5,7 +5,7 @@
  * @author     Yuri Rynkov <yuri@rynkov.eu>
  * @copyright  Copyright (c) 2018 Yuri Rynkov <https://github.com/deepq/syncLogger>
  * @license    http://www.opensource.org/licenses/mit-license.html MIT License
- * @version    0.1 Beta
+ * @version    0.1
  * @description Based on original code of 'logger' <https://github.com/i-break-codes/logerr> by  Vaibhav Mehta <firekillz@gmail.com>
  */
 
