@@ -85,10 +85,10 @@ var Logerr = function () {
         http.onreadystatechange = function () {
             if (http.readyState === 4 && http.status === 200) {
                 successCb && successCb();
-                return;
             }
-
-            failCb && failCb();
+            if (http.readyState === 4 && http.status !== 200) {
+                failCb && failCb();
+            }
         };
     }
 
@@ -137,7 +137,7 @@ var Logerr = function () {
             errorCb && typeof errorCb === 'function' && errorCb();
         }
 
-        makeRequest(remoteSettings.batchUrl, data, handleSuccess, handleError);
+        makeRequest(remoteSettings.batchUrl, {events: data}, handleSuccess, handleError);
     }
 
     function syncFailedErrors(config) {
@@ -169,6 +169,7 @@ var Logerr = function () {
             error: e.message,
             stackTrace: ((e.error) ? e.error.stack.toString().replace(/(\r\n|\n|\r)/gm, "") : ""),
             datetime: datetime,
+            dateutc: Date.now(),
             userAgent: navigator.userAgent || window.navigator.userAgent,
             browser: browser,
             language: navigator.language,
