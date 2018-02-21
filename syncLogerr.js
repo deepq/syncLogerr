@@ -23,7 +23,7 @@ var Logerr = function () {
         var config = {
             detailedErrors: true,
             remoteLogging: false,
-            syncInterval: 2000,
+            syncInterval: 5000,
             remoteSettings: {
                 url: null,
                 additionalParams: null,
@@ -152,34 +152,68 @@ var Logerr = function () {
         }, config.syncInterval);
     }
 
+    function log(data) {
+        if (setConfig.remoteLogging) {
+            remoteLogging(data, setConfig.remoteSettings);
+        }
+    }
+
     function errorData(e) {
-        var filename = e.filename.lastIndexOf('/');
         var datetime = new Date().toString();
 
         /**
          * userAgent only for POST request purposes, not required in pretty print
          */
-
-        return {
-            type: e.type,
-            path: e.filename,
-            filename: e.filename.substring(++filename),
-            line: e.lineno,
-            column: e.colno,
-            error: e.message,
-            stackTrace: ((e.error) ? e.error.stack.toString().replace(/(\r\n|\n|\r)/gm, "") : ""),
-            datetime: datetime,
-            dateutc: Date.now(),
-            userAgent: navigator.userAgent || window.navigator.userAgent,
-            browser: browser,
-            language: navigator.language,
-            screen: getScreen(),
-            url: window.document.URL,
-            queryString: window.location.search,
-            location: window.location.hash,
-            codeVersion: '',
-            logLevel: ''
-        };
+        if (e instanceof ErrorEvent) {
+            var filename = e.filename.lastIndexOf('/');
+            return {
+                type: e.type,
+                path: e.filename,
+                filename: e.filename.substring(++filename),
+                line: e.lineno,
+                column: e.colno,
+                error: e.message,
+                stackTrace: ((e.error) ? e.error.stack.toString().replace(/(\r\n|\n|\r)/gm, "") : ""),
+                datetime: datetime,
+                dateutc: Date.now(),
+                userAgent: navigator.userAgent || window.navigator.userAgent,
+                browser: browser,
+                language: navigator.language,
+                screen: getScreen(),
+                url: window.document.URL,
+                queryString: window.location.search,
+                location: window.location.hash,
+                codeVersion: '',
+                logLevel: 'error',
+                duration: e.duration || '',
+                code: e.code || '',
+                metadata: (typeof e.metadata === 'object') ? JSON.stringify(e.metadata) : e.metadata
+            };
+        } else {
+            return {
+                type: e.type || 'log',
+                path: '',
+                filename: '',
+                line: '',
+                column: '',
+                error: e.message,
+                stackTrace: '',
+                datetime: datetime,
+                dateutc: Date.now(),
+                userAgent: navigator.userAgent || window.navigator.userAgent,
+                browser: browser,
+                language: navigator.language,
+                screen: getScreen(),
+                url: window.document.URL,
+                queryString: window.location.search,
+                location: window.location.hash,
+                codeVersion: '',
+                logLevel: e.logLevel || 'info',
+                duration: e.duration || '',
+                code: e.code || '',
+                metadata: (typeof e.metadata === 'object') ? JSON.stringify(e.metadata) : e.metadata
+            }
+        }
     }
 
     //Polyfill for Object.assign
@@ -324,7 +358,8 @@ var Logerr = function () {
     }
 
     return {
-        init: init
+        init: init,
+        log: log
     };
 
 }();
